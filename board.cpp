@@ -2,20 +2,6 @@
 
 using std::vector;
 
-const vector<vector<Cell>> Board::EMPTY_BOARD =
-{
-    { EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY },
-    { EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY },
-    { EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY },
-    { EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY },
-    { EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY },
-    { EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY },
-    { EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY },
-    { EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY },
-    { EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY },
-    { EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY }
-};
-
 const vector<vector<Cell>> Board::BOARD_1 =
 {
     { BLOCKED, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY },
@@ -58,7 +44,32 @@ Board::~Board()
 
 void Board::load(int boardId)
 {
-    // TODO
+    const std::vector<std::vector<Cell>>* chosenTemplate;
+    // bool loadSuccess = false;
+
+    // while (loadSuccess == false) {
+    //     if (boardId == 0 || boardId == 1) {
+    //         chosenTemplate = &BOARD_1;
+    //     } else if (boardId == 2) {
+    //         chosenTemplate = &BOARD_2;
+    //     } else {
+    //         Helper::printInvalidInput();
+    //         loadSuccess = !loadSuccess;
+    //     }
+    //     loadSuccess = !loadSuccess;
+    // }
+
+    if (boardId == 0 || boardId == 1) {
+        chosenTemplate = &BOARD_1;
+    } else {
+        chosenTemplate = &BOARD_2;
+    }
+
+    for (int i = 0; i < DEFAULT_BOARD_DIMENSION; i++) {
+        for (int j = 0; j < DEFAULT_BOARD_DIMENSION; j++) {
+            (*board)[i][j] = (*chosenTemplate)[i][j];
+        }
+    }
 }
 
 bool Board::placePlayer(Position position)
@@ -111,6 +122,7 @@ void Board::display(Player* player)
         }
         std::cout << LINE_OUTPUT << std::endl;
     }
+    std::cout << std::endl;
 }
 
 

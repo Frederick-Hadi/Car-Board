@@ -28,8 +28,6 @@ enum PlayerMove
 
 class Board
 {
-    const static std::vector<std::vector<Cell>> EMPTY_BOARD;
-
     // Two default board configurations
     const static std::vector<std::vector<Cell>> BOARD_1;
     const static std::vector<std::vector<Cell>> BOARD_2;
