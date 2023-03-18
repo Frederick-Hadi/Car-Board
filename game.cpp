@@ -16,6 +16,8 @@ void showStudentInformation(std::string name, std::string id, std::string email)
 Game::Game()
 {
     // TODO
+    board = nullptr;
+    player = nullptr;
 
 }
 
@@ -39,6 +41,7 @@ void Game::start()
     std::string userInput;
     userInput = Helper::readInput();
 
+    //TODO: REPLACE "3" AND STUFF WITH #DEFINES
     // quit once user inputs 3
     while (userInput != "3" && !std::cin.eof()) {
         // show student info for option 2
@@ -46,42 +49,7 @@ void Game::start()
             showStudentInformation(STUDENT_NAME, STUDENT_ID, STUDENT_EMAIL);
         }
         else if (userInput == "1") {
-            Helper::showPlayMenu();
-            Game::loadBoard();
-            Game::initializePlayer();
-
-            board->display(player);
-
-            std::cout << "At this stage of the program, only two commands are acceptable:" << std::endl;
-            std::cout << "  load <g>" << std::endl;
-            std::cout << "  quit" << std::endl;
-
-            userInput = Helper::readInput();
-
-            while (userInput != COMMAND_QUIT) {
-                std::vector<std::string> command;
-                Helper::splitString(userInput, command, " ");
-
-                if (command[0] == COMMAND_LOAD) {
-                    std::string boardID = command[1];
-                    if (boardID == "0" || boardID == "1" || boardID == "2" ) {
-                        board->load(std::stoi(boardID));
-                        board->display(player);
-
-                        
-                    } else {
-                        Helper::printInvalidInput();
-                    }
-                } else {
-                    Helper::printInvalidInput();
-                }
-
-                std::cout << "At this stage of the program, only two commands are acceptable:" << std::endl;
-                std::cout << "  load <g>" << std::endl;
-                std::cout << "  quit" << std::endl;
-                userInput = Helper::readInput();
-            }
-
+            Game::loadBoard();            
         }
         else {
             Helper::printInvalidInput();
@@ -98,9 +66,46 @@ bool Game::loadBoard()
 {
     //TODO
     this->board = new Board();
+    bool successfulBoardLoad = false;
+
+    Helper::showPlayMenu();
+
+    board->display(player);
+
+    std::cout << "At this stage of the program, only two commands are acceptable:" << std::endl;
+    std::cout << "  load <g>" << std::endl;
+    std::cout << "  quit" << std::endl;
+
+    std::string userInput = Helper::readInput();
+
+    // loop until the user either quits or successfully loads a board
+    while (userInput != COMMAND_QUIT || successfulBoardLoad == false) {
+        std::vector<std::string> command;
+        Helper::splitString(userInput, command, " ");
+
+        if (command[0] == COMMAND_LOAD) {
+            std::string boardID = command[1];
+            //TODO: you can use Helper::isNumber() instead
+            if (boardID == "0" || boardID == "1" || boardID == "2" ) {
+                board->load(std::stoi(boardID));
+                board->display(player);
+                successfulBoardLoad = true;
+                
+            } else {
+                Helper::printInvalidInput();
+            }
+        } else {
+            Helper::printInvalidInput();
+        }
+
+        std::cout << "At this stage of the program, only two commands are acceptable:" << std::endl;
+        std::cout << "  load <g>" << std::endl;
+        std::cout << "  quit" << std::endl;
+        userInput = Helper::readInput();
+    }
 
 
-    return true; // feel free to revise this line, depending on your implementation.
+    return successfulBoardLoad; // feel free to revise this line, depending on your implementation.
     //     ^^^ used to be false, changed to true for now
 }
 

@@ -28,11 +28,6 @@ int main()
     game->start();
 
 
-    
-
-    
-    
-
     std::cout << "Good bye!\n\n";
 
     return EXIT_SUCCESS;
