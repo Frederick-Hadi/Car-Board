@@ -45,7 +45,11 @@ public:
 
     static void printInvalidInput();
 
-    static void showMenu();
+    static void showMainMenu();
+
+    static void showPlayMenu();
+
+    static void printSeparator();
 
 };
 #endif

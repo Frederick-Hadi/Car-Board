@@ -3,6 +3,7 @@
 Game::Game()
 {
     // TODO
+    
 }
 
 Game::~Game()
@@ -14,6 +15,9 @@ Game::~Game()
 void Game::start()
 {
     //TODO
+    loadBoard();
+    initializePlayer();
+    play();
 }
 
 bool Game::loadBoard()

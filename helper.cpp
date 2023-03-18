@@ -60,14 +60,32 @@ string Helper::readInput()
     return input;
 }
 
-void Helper::showMenu()
+void Helper::showMainMenu()
 {
+    std::cout << "Welcome to Car Board" << std::endl;
+    Helper::printSeparator();
     std::cout << "1. Play game" << std::endl;
     std::cout << "2. Show student's information" << std::endl;
     std::cout << "3. Quit" << std::endl;
 }
 
+// When the player first chooses 1. Play Game from the main menu
+void Helper::showPlayMenu()
+{
+    std::cout << "You can use the following commands to play the game:" << std::endl;
+    std::cout << "load <g>" << std::endl;
+    std::cout << "   g: the id of the game board to load" << std::endl;
+    std::cout << "init <x>,<y>,<direction>" << std::endl;
+    std::cout << "   x: horizontal position of the car on the board (between 0 & 9)" << std::endl;
+    std::cout << "   y: vertical position of the car on the board (between 0 & 9)" << std::endl;
+    std::cout << "   direction: direction of the car's movement (north, east, south, west)" << std::endl;
+    std::cout << "forward (or f)" << std::endl;
+    std::cout << "turn_left (or l)" << std::endl;
+    std::cout << "turn_right (or r)" << std::endl;
+    std::cout << "quit" << std::endl;
+}
+
 void Helper::printSeparator()
 {
-    
+    std::cout << "--------------------" << std::endl;
 }
