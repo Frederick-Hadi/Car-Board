@@ -99,26 +99,24 @@ void Board::display(Player* player)
     }
     std::cout << LINE_OUTPUT <<std::endl;
 
-    for (int rows = 0; rows < DEFAULT_BOARD_DIMENSION; rows++) {
-        for (int columns = -1; columns < DEFAULT_BOARD_DIMENSION; columns++) {
+    //print out rows
+    for (int i = 0; i < DEFAULT_BOARD_DIMENSION; i++) { //num remaining rows
+        for (int j = -1; j < DEFAULT_BOARD_DIMENSION; j++) { //num columns
             std::cout << LINE_OUTPUT;
-            if (columns == -1) {
+            if (j == -1) {
                 // output the row numbers first
-                std::cout << rows;
+                std::cout << i;
             } else {
                 // print out contents of board
-                Cell currentCell = (*this->board)[rows][columns];
+                Cell currentCell = (*this->board)[i][j];
 
                 if (currentCell == EMPTY) { 
                     std::cout << EMPTY_OUTPUT;
                 } else if (currentCell == BLOCKED) {
                     std::cout << BLOCKED_OUTPUT;
-                } else if (currentCell == PLAYER) {
-                    if (player != nullptr) {
-                        player->displayDirection();
-                    } else {
-                        std::cout << EMPTY_OUTPUT;
-                    }
+                } else {
+                    //TODO: add case for Player
+                    std::cout << "missing player functionality";
                 }
             }
         }
