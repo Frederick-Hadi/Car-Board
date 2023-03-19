@@ -29,7 +29,7 @@ int main()
 
 
     std::cout << "Good bye!\n\n";
-
+    delete game;
     return EXIT_SUCCESS;
 }
 
