@@ -1,9 +1,14 @@
 #include "game.h"
 
-//MOVE THIS SOMEWHERE LATER??? HOW DO YOU STRUCTURE THIS CODE
+//MOVE THIS SOMEWHERE LATER? DOES IT MAKE SENSE TO BE HERE?
 #define STUDENT_NAME "Frederick_Hadi"
 #define STUDENT_ID "s3953344"
 #define STUDENT_EMAIL "s3953344@student.rmit.edu.au"
+
+//defining start menu commands
+#define PLAY_GAME_COMMAND "1"
+#define SHOW_STUDENT_INFO_COMMAND "2"
+#define QUIT_GAME_COMMAND "3"
 
 void showStudentInformation(std::string name, std::string id, std::string email){
     Helper::printSeparator();
@@ -11,6 +16,15 @@ void showStudentInformation(std::string name, std::string id, std::string email)
     std::cout << "No: " << id << std::endl;
     std::cout << "Email: " << email << std::endl;
     Helper::printSeparator();
+}
+
+void showAcceptableCommands(bool boardLoaded) {
+    std::cout << "At this stage of the program, only two commands are acceptable:" << std::endl;
+    std::cout << "  load <g>" << std::endl;
+    if (boardLoaded) {
+        std::cout << "  init <x>, <y>, <direction>" << std::endl;
+    }
+    std::cout << "  quit" << std::endl << std::endl;
 }
 
 Game::Game()
@@ -32,24 +46,31 @@ Game::~Game()
 void Game::start()
 {
     //TODO
-    
-
-    Helper::showMainMenu();
-    std::cout << std::endl << "Please enter your choice: ";
+    bool boardIsLoaded = false;
     
     // read user input
+    Helper::showMainMenu();
+    std::cout << std::endl << "Please enter your choice: ";
     std::string userInput;
     userInput = Helper::readInput();
 
+    /*
+     * While loop handling starting the game
+     * and initial board loading
+    */
     //TODO: REPLACE "3" AND STUFF WITH #DEFINES
     // quit once user inputs 3
-    while (userInput != "3" && !std::cin.eof()) {
+    while (userInput != QUIT_GAME_COMMAND && !std::cin.eof()) {
         // show student info for option 2
-        if (userInput == "2") {
+        if (userInput == SHOW_STUDENT_INFO_COMMAND) {
             showStudentInformation(STUDENT_NAME, STUDENT_ID, STUDENT_EMAIL);
         }
-        else if (userInput == "1") {
-            Game::loadBoard();            
+        else if (userInput == PLAY_GAME_COMMAND) {
+            Helper::showPlayMenu();
+            board->display(player);
+            showAcceptableCommands(boardIsLoaded);
+
+            boardIsLoaded = Game::loadBoard();
         }
         else {
             Helper::printInvalidInput();
@@ -59,6 +80,16 @@ void Game::start()
         std::cout << std::endl << "Please enter your choice: ";
         userInput = Helper::readInput();
     }
+
+    /*
+     * If board is loaded, initialise the player
+    */
+    if (boardIsLoaded) {
+        Game::initializePlayer();
+    }
+
+
+    // finally play game at the end
     play();
 }
 
@@ -67,14 +98,6 @@ bool Game::loadBoard()
     //TODO
     this->board = new Board();
     bool successfulBoardLoad = false;
-
-    Helper::showPlayMenu();
-
-    board->display(player);
-
-    std::cout << "At this stage of the program, only two commands are acceptable:" << std::endl;
-    std::cout << "  load <g>" << std::endl;
-    std::cout << "  quit" << std::endl;
 
     std::string userInput = Helper::readInput();
 
@@ -100,7 +123,7 @@ bool Game::loadBoard()
 
         std::cout << "At this stage of the program, only two commands are acceptable:" << std::endl;
         std::cout << "  load <g>" << std::endl;
-        std::cout << "  quit" << std::endl;
+        std::cout << "  quit" << std::endl << std::endl;
         userInput = Helper::readInput();
     }
 
@@ -113,6 +136,13 @@ bool Game::initializePlayer()
 {
     //TODO
     this->player = new Player();
+
+    std::cout << "At this stage of the program, only three commands are acceptable:" << std::endl;
+    std::cout << "  load <g>" << std::endl;
+    std::cout << "  init <x>, <y>, <direction>" << std::endl;
+    std::cout << "  quit" << std::endl;
+    std::string userInput = Helper::readInput();
+
 
     return false; // feel free to revise this line.
 }
