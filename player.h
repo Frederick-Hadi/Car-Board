@@ -13,8 +13,8 @@
 
 enum Direction
 {
-    NORTH,
-    EAST,
+	NORTH,
+	EAST,
 	SOUTH,
 	WEST
 };

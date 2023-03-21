@@ -72,10 +72,21 @@ void Board::load(int boardId)
     }
 }
 
+/*
+ * also handles range checking of position
+*/
 bool Board::placePlayer(Position position)
 {
-    // TODO
-    return false; // feel free to revise this line, depending on your implementation.
+    
+    bool success = false;
+    if (position.x >= 0 && position.x < DEFAULT_BOARD_DIMENSION && position.y >= 0 && position.y < DEFAULT_BOARD_DIMENSION) {
+        if ((*board)[position.x][position.y] == EMPTY) {
+            (*board)[position.x][position.y] = PLAYER;
+            success = true;
+        }
+    }
+
+    return success; // feel free to revise this line, depending on your implementation.
 }
 
 PlayerMove Board::movePlayerForward(Player* player)
@@ -116,7 +127,15 @@ void Board::display(Player* player)
                     std::cout << BLOCKED_OUTPUT;
                 } else {
                     //TODO: add case for Player
-                    std::cout << "missing player functionality";
+                    if (player->direction == NORTH) {
+                        std::cout << DIRECTION_ARROW_OUTPUT_NORTH;
+                    } else if (player->direction == EAST) {
+                        std::cout << DIRECTION_ARROW_OUTPUT_EAST;
+                    } else if (player->direction == SOUTH) {
+                        std::cout << DIRECTION_ARROW_OUTPUT_SOUTH;
+                    } else if (player->direction == WEST) {
+                        std::cout << DIRECTION_ARROW_OUTPUT_WEST;
+                    } 
                 }
             }
         }

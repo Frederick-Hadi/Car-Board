@@ -37,90 +37,80 @@ Game::~Game()
 
 void Game::start()
 {
+    //bool boardLoaded = false;
+
     board = new Board();
-    std::string userInput = Helper::readInput();
+    board->display(player);
+    bool loadSuccess = true;
+
+    while (loadSuccess) {
+        loadSuccess = loadBoard();
+        if (loadSuccess) {
+            loadSuccess = initializePlayer();
+        }
+    }
 
     
-    bool boardLoaded = false;
-    while (userInput != COMMAND_QUIT) {
-        if (boardLoaded) {
-            // fill in
-        } else {
-            Helper::printInvalidInput();
-        }
+    // while (userInput != COMMAND_QUIT) {
+    //     Game::loadBoard();
         
         
-        std::cout << std::endl << "Please enter command: ";
-        userInput = Helper::readInput();
-    }
+    //     //replace later with input validation function
+    //     if (boardLoaded && command[0] == "init") {
+    //         // fill in
+    //         Game::initializePlayer();
+    //     } else if (command[0] == "load") {
+
+    //     }
+        
+    //     else {
+    //         Helper::printInvalidInput();
+    //     }
+        
+        
+    //     std::cout << std::endl << "Please enter command: ";
+    //     userInput = Helper::readInput();
+    //     Helper::splitString(userInput, command, " ");
+    // }
             
-    play();
+    // play();
 }
+
+// bool handleLoadBoardCommand(std::vector<std::string> command) {
+//      uuuuh
+// }
 
 bool Game::loadBoard()
 {
     bool loadSuccess = false;
     
-    
+    showOptions(loadSuccess);
+    std::cout << "Please enter command: ";
     std::string userInput = Helper::readInput();
-
     std::vector<std::string> command;
     Helper::splitString(userInput, command, " ");
 
-    if (command[0] == COMMAND_LOAD && Helper::isNumber(command[1])) {
-        int boardID = std::stoi(command[1]);
-        if (boardID >= 0 && boardID <= 2) {
-            board->load(boardID);
-            board->display(player);
-            loadSuccess = true;
+    while (command[0] != COMMAND_QUIT && loadSuccess == false) {
+        // replace with dedicated input validation function later
+        if (command[0] == COMMAND_LOAD && Helper::isNumber(command[1])) {
+            int boardID = std::stoi(command[1]);
+            if (boardID >= 0 && boardID <= 2) {
+                board->load(boardID);
+                board->display(player);
+                loadSuccess = true;
+            }
+        }
+
+        if (!loadSuccess) {
+            Helper::printInvalidInput();
+            std::cout << "Please enter command: ";
+            std::string userInput = Helper::readInput();
+            std::vector<std::string> command;
+            Helper::splitString(userInput, command, " ");
         }
     }
 
     return loadSuccess;
-
-    // //TODO
-    // this->board = new Board();
-    // bool successfulBoardLoad = false;
-
-    // Helper::showPlayMenu();
-
-    // board->display(player);
-
-    // std::cout << "At this stage of the program, only two commands are acceptable:" << std::endl;
-    // std::cout << "  load <g>" << std::endl;
-    // std::cout << "  quit" << std::endl;
-
-    // std::string userInput = Helper::readInput();
-
-    // // loop until the user either quits or successfully loads a board
-    // while (userInput != COMMAND_QUIT || successfulBoardLoad == false) {
-    //     std::vector<std::string> command;
-    //     Helper::splitString(userInput, command, " ");
-
-    //     if (command[0] == COMMAND_LOAD) {
-    //         std::string boardID = command[1];
-    //         //TODO: you can use Helper::isNumber() instead
-    //         if (boardID == "0" || boardID == "1" || boardID == "2" ) {
-    //             board->load(std::stoi(boardID));
-    //             board->display(player);
-    //             successfulBoardLoad = true;
-                
-    //         } else {
-    //             Helper::printInvalidInput();
-    //         }
-    //     } else {
-    //         Helper::printInvalidInput();
-    //     }
-
-    //     std::cout << "At this stage of the program, only two commands are acceptable:" << std::endl;
-    //     std::cout << "  load <g>" << std::endl;
-    //     std::cout << "  quit" << std::endl;
-    //     userInput = Helper::readInput();
-    // }
-
-
-    // return successfulBoardLoad; // feel free to revise this line, depending on your implementation.
-    // //     ^^^ used to be false, changed to true for now
 }
 
 bool Game::initializePlayer()
@@ -128,7 +118,60 @@ bool Game::initializePlayer()
     //TODO
     this->player = new Player();
 
-    return false; // feel free to revise this line.
+    
+    bool initSuccess = false;
+    showOptions(true);
+    std::cout << "Please enter command: ";
+    std::string userInput = Helper::readInput();
+    std::vector<std::string> command;
+    Helper::splitString(userInput, command, " ");
+
+    while (command[0] != COMMAND_QUIT && initSuccess == false) {
+        // replace with dedicated input validation function later
+        if (command[0] == COMMAND_LOAD && Helper::isNumber(command[1])) {
+            int boardID = std::stoi(command[1]);
+            if (boardID >= 0 && boardID <= 2) {
+                board->load(boardID);
+                board->display(player);
+                initSuccess = true;
+            }
+        } else if (command[0] == COMMAND_INIT) {
+            //assuming it is a valid command and valid coordinate
+            Position pos = Position(std::stoi(command[1]), std::stoi(command[2]));
+            player->position = pos;
+
+            bool successfulPlacement = board->placePlayer(pos);
+
+            if (successfulPlacement) {
+                if (command[3] == DIRECTION_NORTH) {
+                    player->direction = NORTH;
+                } else if (command[3] == DIRECTION_EAST) {
+                    player->direction = EAST;
+                } else if (command[3] == DIRECTION_SOUTH) {
+                    player->direction = SOUTH;
+                } else if (command[3] == DIRECTION_WEST) {
+                    player->direction = WEST;
+                }
+
+                board->display(player);
+
+                initSuccess = true;
+            } else {
+                std::cout << "cannot place player here" << std::endl;
+            }
+        }
+
+        if (!initSuccess) {
+            Helper::printInvalidInput();
+            std::cout << "Please enter command: ";
+            std::string userInput = Helper::readInput();
+            std::vector<std::string> command;
+            Helper::splitString(userInput, command, " ");
+        }
+    }
+    
+
+    return initSuccess; // feel free to revise this line.
 }
 
 void Game::play()
