@@ -47,6 +47,11 @@ void Game::start()
         loadSuccess = loadBoard();
         if (loadSuccess) {
             loadSuccess = initializePlayer();
+            if (loadSuccess) {
+                play();
+                // after you finish playing, you must have exited
+                loadSuccess = false;
+            }   
         }
     }
 
@@ -120,6 +125,8 @@ bool Game::initializePlayer()
 
     
     bool initSuccess = false;
+    bool loadSuccess = false;
+
     showOptions(true);
     std::cout << "Please enter command: ";
     std::string userInput = Helper::readInput();
@@ -127,13 +134,17 @@ bool Game::initializePlayer()
     Helper::splitString(userInput, command, " ");
 
     while (command[0] != COMMAND_QUIT && initSuccess == false) {
+        loadSuccess = false;
+        
         // replace with dedicated input validation function later
         if (command[0] == COMMAND_LOAD && Helper::isNumber(command[1])) {
             int boardID = std::stoi(command[1]);
             if (boardID >= 0 && boardID <= 2) {
                 board->load(boardID);
                 board->display(player);
-                initSuccess = true;
+                loadSuccess = true;
+            } else {
+                Helper::printInvalidInput();
             }
         } else if (command[0] == COMMAND_INIT) {
             //assuming it is a valid command and valid coordinate
@@ -161,11 +172,13 @@ bool Game::initializePlayer()
             }
         }
 
-        if (!initSuccess) {
-            Helper::printInvalidInput();
+        if (initSuccess == false) {
+            if (loadSuccess == false) {
+                Helper::printInvalidInput();
+            }
+            showOptions(true);
             std::cout << "Please enter command: ";
-            std::string userInput = Helper::readInput();
-            std::vector<std::string> command;
+            userInput = Helper::readInput();
             Helper::splitString(userInput, command, " ");
         }
     }
@@ -177,5 +190,5 @@ bool Game::initializePlayer()
 void Game::play()
 {
     //TODO
-
+    
 }

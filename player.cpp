@@ -2,13 +2,15 @@
 
 Position::Position()
 {
-    //TODO
+    this->x = 0;
+    this->y = 0;
 }
 
 
 Position::Position(int x, int y)
 {
-    //TODO
+    this->x = x;
+    this->y = y;
 }
 
 Player::Player()
