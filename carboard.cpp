@@ -23,9 +23,8 @@ void showStudentInformation(std::string name, std::string id, std::string email)
     std::cout << "No: " << id << std::endl;
     std::cout << "Email: " << email << std::endl;
     Helper::printSeparator();
+    std::cout << std::endl;
 }
-
-
 
 int main()
 {
@@ -33,8 +32,6 @@ int main()
      * TODO: here's the main function. You can write the "main menu" loop/code
      * here or you can make separate functions - up to you.
      */
-    // Game* game = new Game();
-    // game->start();
 
     Helper::showMainMenu();
     std::cout << std::endl << "Please enter your choice: ";

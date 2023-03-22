@@ -79,13 +79,13 @@ bool Board::placePlayer(Position position)
 {
     bool success = false;
     if (position.x >= 0 && position.x < DEFAULT_BOARD_DIMENSION && position.y >= 0 && position.y < DEFAULT_BOARD_DIMENSION) {
-        if ((*board)[position.x][position.y] == EMPTY) {
-            (*board)[position.x][position.y] = PLAYER;
+        if ((*board)[position.y][position.x] == EMPTY) {
+            (*board)[position.y][position.x] = PLAYER;
             success = true;
         }
     }
 
-    return success; // feel free to revise this line, depending on your implementation.
+    return success;
 }
 
 PlayerMove Board::movePlayerForward(Player* player)
@@ -110,8 +110,8 @@ void Board::display(Player* player)
     std::cout << LINE_OUTPUT <<std::endl;
 
     //print out rows
-    for (int i = 0; i < DEFAULT_BOARD_DIMENSION; i++) { //num remaining rows
-        for (int j = -1; j < DEFAULT_BOARD_DIMENSION; j++) { //num columns
+    for (int i = 0; i < DEFAULT_BOARD_DIMENSION; i++) { 
+        for (int j = -1; j < DEFAULT_BOARD_DIMENSION; j++) { 
             std::cout << LINE_OUTPUT;
             if (j == -1) {
                 // output the row numbers first
@@ -125,7 +125,7 @@ void Board::display(Player* player)
                 } else if (currentCell == BLOCKED) {
                     std::cout << BLOCKED_OUTPUT;
                 } else {
-                    //TODO: add case for Player
+                    // display player
                     if (player->direction == NORTH) {
                         std::cout << DIRECTION_ARROW_OUTPUT_NORTH;
                     } else if (player->direction == EAST) {

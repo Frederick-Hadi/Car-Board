@@ -6,7 +6,9 @@
 #define STUDENT_EMAIL "s3953344@student.rmit.edu.au"
 
 
-
+using std::cout;
+using std::endl;
+using std::string;
 
 /*
  * Show board loading options
@@ -18,7 +20,7 @@ void showOptions(bool showPlayerInitCommand) {
     if (showPlayerInitCommand) {
         std::cout << "  init <x>,<y>,<direction>" << std::endl;
     }
-    std::cout << "  quit" << std::endl;
+    std::cout << "  quit" << std::endl << std::endl;
 }
 
 void showControls() {
@@ -70,7 +72,7 @@ void Game::start()
 
 bool isValidLoadCommand(std::vector<std::string> command) {
     bool isValid = false;
-    if (command[0] == COMMAND_LOAD && Helper::isNumber(command[1])) {
+    if (command[0] == COMMAND_LOAD && Helper::isNumber(command[1]) && command.size() == 2) {
             int boardID = std::stoi(command[1]);
             if (boardID >= 0 && boardID <= 2) {
                 isValid = true;
@@ -79,6 +81,10 @@ bool isValidLoadCommand(std::vector<std::string> command) {
     return isValid;
 }
 
+/* 
+ * does not do range input validation on coordinates
+ * but does check valid direction
+*/
 bool isValidInitCommand(std::vector<std::string> command) {
     bool isValid = false;
 
@@ -88,7 +94,7 @@ bool isValidInitCommand(std::vector<std::string> command) {
         // std::cout << args[0] << std::endl;
         // std::cout << args[1] << std::endl;
         // std::cout << args[2] << std::endl;
-        if (Helper::isNumber(args[0]) && Helper::isNumber(args[1])) {
+        if (Helper::isNumber(args[0]) && Helper::isNumber(args[1]) && args.size() == 3) {
             if (args[2] == DIRECTION_NORTH || args[2] == DIRECTION_EAST || args[2] == DIRECTION_SOUTH || args[2] == DIRECTION_WEST) {
                 isValid = true;
             }
@@ -107,8 +113,7 @@ bool Game::loadBoard()
     std::vector<std::string> command;
     Helper::splitString(userInput, command, " ");
 
-    while (command[0] != COMMAND_QUIT && loadSuccess == false) {
-        // replace with dedicated input validation function later
+    while (command[0] != COMMAND_QUIT && loadSuccess == false && !std::cin.eof()) {
         if (isValidLoadCommand(command)) {
             int boardID = std::stoi(command[1]);
             board->load(boardID);
@@ -129,10 +134,8 @@ bool Game::loadBoard()
 
 bool Game::initializePlayer()
 {
-    //TODO
     this->player = new Player();
 
-    
     bool initSuccess = false;
     bool loadSuccess = false;
 
@@ -142,7 +145,7 @@ bool Game::initializePlayer()
     std::vector<std::string> command;
     Helper::splitString(userInput, command, " ");
 
-    while (command[0] != COMMAND_QUIT && initSuccess == false) {
+    while (command[0] != COMMAND_QUIT && initSuccess == false && !std::cin.eof()) {
         loadSuccess = false;
         
         if (isValidLoadCommand(command)) {
@@ -153,29 +156,28 @@ bool Game::initializePlayer()
         } else if (isValidInitCommand(command)) {
             std::vector<std::string> args;
             Helper::splitString(command[1], args, ",");
-            Position pos = Position(std::stoi(args[0]), std::stoi(args[1]));
-            player->position = pos;
 
-            bool successfulPlacement = board->placePlayer(pos);
+            bool successfulPlacement = board->placePlayer(Position(std::stoi(args[0]), std::stoi(args[1])));
 
             if (successfulPlacement) {
+                Direction direction;
                 if (args[2] == DIRECTION_NORTH) {
-                    player->direction = NORTH;
+                    direction = NORTH;
                 } else if (args[2] == DIRECTION_EAST) {
-                    player->direction = EAST;
+                    direction = EAST;
                 } else if (args[2] == DIRECTION_SOUTH) {
-                    player->direction = SOUTH;
-                } else if (args[2] == DIRECTION_WEST) {
-                    player->direction = WEST;
+                    direction = SOUTH;
                 } else {
-                    std::cout << "THIS SHOULD NEVER HAPPEN";
+                    direction = WEST;
                 }
 
+                Position* pos = new Position(std::stoi(args[0]), std::stoi(args[1]));
+                player->initialisePlayer(pos, direction);
                 board->display(player);
 
                 initSuccess = true;
             } else {
-                std::cout << "Cannot place player here because it is blocked." << std::endl;
+                std::cout << "Cannot place player here because it is blocked or out of bounds." << std::endl;
             }
         }
 
@@ -198,16 +200,26 @@ void Game::play()
 {
     //TODO
     showControls();
-    std::cout << "enter command: ";
+    std::cout << "Enter command: ";
     std::string userInput = Helper::readInput();
 
-    while (userInput != COMMAND_QUIT) {
-        std::cout << "cool beans" << std::endl;
+    while (userInput != COMMAND_QUIT && !std::cin.eof()) {
+        
         board->display(player);
+
+        if (userInput == COMMAND_FORWARD || userInput == COMMAND_FORWARD_SHORTCUT) {
+            cout << "move forward" << endl;
+        } else if (userInput == COMMAND_TURN_LEFT || userInput == COMMAND_TURN_LEFT_SHORTCUT) {
+            cout << "turn left" << endl;
+        } else if (userInput == COMMAND_TURN_RIGHT || userInput == COMMAND_TURN_RIGHT_SHORTCUT) {
+            cout << "turn right" << endl;
+        } else {
+            Helper::printInvalidInput();
+        }
 
 
         showControls();
-        std::cout << "enter command: ";
+        std::cout << "Enter command: ";
         userInput = Helper::readInput();
     }
     
