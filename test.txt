@@ -1,2 +1,5 @@
-ehllo
-luch 
+1
+load 2
+init 8,8,north
+l 
+left

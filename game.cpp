@@ -91,9 +91,6 @@ bool isValidInitCommand(std::vector<std::string> command) {
     if (command[0] == COMMAND_INIT) {
         std::vector<std::string> args;
         Helper::splitString(command[1], args, ",");
-        // std::cout << args[0] << std::endl;
-        // std::cout << args[1] << std::endl;
-        // std::cout << args[2] << std::endl;
         if (Helper::isNumber(args[0]) && Helper::isNumber(args[1]) && args.size() == 3) {
             if (args[2] == DIRECTION_NORTH || args[2] == DIRECTION_EAST || args[2] == DIRECTION_SOUTH || args[2] == DIRECTION_WEST) {
                 isValid = true;
@@ -199,25 +196,35 @@ bool Game::initializePlayer()
 void Game::play()
 {
     //TODO
+    board->display(player);
     showControls();
     std::cout << "Enter command: ";
     std::string userInput = Helper::readInput();
 
     while (userInput != COMMAND_QUIT && !std::cin.eof()) {
         
-        board->display(player);
+        
 
         if (userInput == COMMAND_FORWARD || userInput == COMMAND_FORWARD_SHORTCUT) {
             cout << "move forward" << endl;
+
+
+
         } else if (userInput == COMMAND_TURN_LEFT || userInput == COMMAND_TURN_LEFT_SHORTCUT) {
-            cout << "turn left" << endl;
+            
+            player->turnDirection(TURN_LEFT);
+
         } else if (userInput == COMMAND_TURN_RIGHT || userInput == COMMAND_TURN_RIGHT_SHORTCUT) {
             cout << "turn right" << endl;
+
+            player->turnDirection(TURN_RIGHT);
         } else {
             Helper::printInvalidInput();
         }
 
 
+
+        board->display(player);
         showControls();
         std::cout << "Enter command: ";
         userInput = Helper::readInput();

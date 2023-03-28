@@ -126,15 +126,16 @@ void Board::display(Player* player)
                     std::cout << BLOCKED_OUTPUT;
                 } else {
                     // display player
-                    if (player->direction == NORTH) {
-                        std::cout << DIRECTION_ARROW_OUTPUT_NORTH;
-                    } else if (player->direction == EAST) {
-                        std::cout << DIRECTION_ARROW_OUTPUT_EAST;
-                    } else if (player->direction == SOUTH) {
-                        std::cout << DIRECTION_ARROW_OUTPUT_SOUTH;
-                    } else if (player->direction == WEST) {
-                        std::cout << DIRECTION_ARROW_OUTPUT_WEST;
-                    } 
+                    player->displayDirection();
+                    // if (player->direction == NORTH) {
+                    //     std::cout << DIRECTION_ARROW_OUTPUT_NORTH;
+                    // } else if (player->direction == EAST) {
+                    //     std::cout << DIRECTION_ARROW_OUTPUT_EAST;
+                    // } else if (player->direction == SOUTH) {
+                    //     std::cout << DIRECTION_ARROW_OUTPUT_SOUTH;
+                    // } else if (player->direction == WEST) {
+                    //     std::cout << DIRECTION_ARROW_OUTPUT_WEST;
+                    // } 
                 }
             }
         }
