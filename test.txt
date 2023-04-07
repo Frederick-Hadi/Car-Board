@@ -1,5 +1,4 @@
 1
 load 2
-init 8,8,north
-l 
-left
+init 9,9,north
+f

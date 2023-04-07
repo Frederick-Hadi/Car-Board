@@ -38,26 +38,12 @@ Board::Board()
 
 Board::~Board()
 {
-    // TODO
     delete this->board;
 }
 
 void Board::load(int boardId)
 {
     const std::vector<std::vector<Cell>>* chosenTemplate;
-    // bool loadSuccess = false;
-
-    // while (loadSuccess == false) {
-    //     if (boardId == 0 || boardId == 1) {
-    //         chosenTemplate = &BOARD_1;
-    //     } else if (boardId == 2) {
-    //         chosenTemplate = &BOARD_2;
-    //     } else {
-    //         Helper::printInvalidInput();
-    //         loadSuccess = !loadSuccess;
-    //     }
-    //     loadSuccess = !loadSuccess;
-    // }
 
     if (boardId == 0 || boardId == 1) {
         chosenTemplate = &BOARD_1;
@@ -90,8 +76,20 @@ bool Board::placePlayer(Position position)
 
 PlayerMove Board::movePlayerForward(Player* player)
 {
-    // TODO
-    return PLAYER_MOVED;
+    PlayerMove moveStatus = PLAYER_MOVED;
+    Position nextPos = player->getNextForwardPosition();
+    
+    if (nextPos.x > DEFAULT_BOARD_DIMENSION - 1 || nextPos.y > DEFAULT_BOARD_DIMENSION - 1) {
+        moveStatus = OUTSIDE_BOUNDS;
+    } else if ((*board)[nextPos.y][nextPos.x] == BLOCKED) {
+        moveStatus = CELL_BLOCKED;
+    } else {
+        (*board)[player->position.y][player->position.x] = EMPTY;
+        player->updatePosition(nextPos);
+        (*board)[player->position.y][player->position.x] = PLAYER;
+    }
+
+    return moveStatus;
 }
 
 void Board::display(Player* player)
@@ -127,15 +125,6 @@ void Board::display(Player* player)
                 } else {
                     // display player
                     player->displayDirection();
-                    // if (player->direction == NORTH) {
-                    //     std::cout << DIRECTION_ARROW_OUTPUT_NORTH;
-                    // } else if (player->direction == EAST) {
-                    //     std::cout << DIRECTION_ARROW_OUTPUT_EAST;
-                    // } else if (player->direction == SOUTH) {
-                    //     std::cout << DIRECTION_ARROW_OUTPUT_SOUTH;
-                    // } else if (player->direction == WEST) {
-                    //     std::cout << DIRECTION_ARROW_OUTPUT_WEST;
-                    // } 
                 }
             }
         }

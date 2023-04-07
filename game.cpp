@@ -66,10 +66,6 @@ void Game::start()
     }
 }
 
-// bool handleLoadBoardCommand(std::vector<std::string> command) {
-//      uuuuh
-// }
-
 bool isValidLoadCommand(std::vector<std::string> command) {
     bool isValid = false;
     if (command[0] == COMMAND_LOAD && Helper::isNumber(command[1]) && command.size() == 2) {
@@ -100,15 +96,12 @@ bool isValidInitCommand(std::vector<std::string> command) {
     return isValid;
 }
 
+
 bool Game::loadBoard()
 {
     bool loadSuccess = false;
-    
-    showOptions(loadSuccess);
-    std::cout << "Please enter command: ";
-    std::string userInput = Helper::readInput();
-    std::vector<std::string> command;
-    Helper::splitString(userInput, command, " ");
+    std::string userInput = "start";
+    std::vector<std::string> command = {"start"};
 
     while (command[0] != COMMAND_QUIT && loadSuccess == false && !std::cin.eof()) {
         if (isValidLoadCommand(command)) {
@@ -119,8 +112,11 @@ bool Game::loadBoard()
         }
 
         if (!loadSuccess) {
-            Helper::printInvalidInput();
-            std::cout << "Please enter command: ";
+            if (command[0] != "start") {
+                Helper::printInvalidInput();
+            }
+            showOptions(loadSuccess);
+            std::cout << "Please enter command (load): ";
             userInput = Helper::readInput();
             Helper::splitString(userInput, command, " ");
         }
@@ -132,24 +128,23 @@ bool Game::loadBoard()
 bool Game::initializePlayer()
 {
     this->player = new Player();
+    bool quit = false;
 
     bool initSuccess = false;
-    bool loadSuccess = false;
 
-    showOptions(true);
-    std::cout << "Please enter command: ";
-    std::string userInput = Helper::readInput();
+    std::string userInput;
     std::vector<std::string> command;
-    Helper::splitString(userInput, command, " ");
 
-    while (command[0] != COMMAND_QUIT && initSuccess == false && !std::cin.eof()) {
-        loadSuccess = false;
+    do {
+        showOptions(true);
+        std::cout << "Please enter command (init): ";
+        userInput = Helper::readInput();
+        Helper::splitString(userInput, command, " ");
         
         if (isValidLoadCommand(command)) {
             int boardID = std::stoi(command[1]);
             board->load(boardID);
             board->display(player);
-            loadSuccess = true;
         } else if (isValidInitCommand(command)) {
             std::vector<std::string> args;
             Helper::splitString(command[1], args, ",");
@@ -172,62 +167,53 @@ bool Game::initializePlayer()
                 player->initialisePlayer(pos, direction);
                 board->display(player);
 
+                // Successful init, so exit out of menu and return true
                 initSuccess = true;
+                quit = true;
             } else {
                 std::cout << "Cannot place player here because it is blocked or out of bounds." << std::endl;
             }
+        } else if (userInput == COMMAND_QUIT || std::cin.eof()) {
+            quit = true;
+        } else {
+            Helper::printInvalidInput();
         }
-
-        if (initSuccess == false) {
-            if (loadSuccess == false) {
-                Helper::printInvalidInput();
-            }
-            showOptions(true);
-            std::cout << "Please enter command: ";
-            userInput = Helper::readInput();
-            Helper::splitString(userInput, command, " ");
-        }
-    }
+    } while (!quit);
     
 
-    return initSuccess; // feel free to revise this line.
+    return initSuccess;
 }
 
 void Game::play()
 {
-    //TODO
-    board->display(player);
-    showControls();
-    std::cout << "Enter command: ";
-    std::string userInput = Helper::readInput();
+    std::string userInput;
+    bool quit = false;
 
-    while (userInput != COMMAND_QUIT && !std::cin.eof()) {
-        
-        
+    do {
+        board->display(player);
+        showControls();
+        std::cout << "Enter command (move): ";
+        userInput = Helper::readInput();
 
         if (userInput == COMMAND_FORWARD || userInput == COMMAND_FORWARD_SHORTCUT) {
-            cout << "move forward" << endl;
-
-
-
+            PlayerMove moveStatus = board->movePlayerForward(player);
+            if (moveStatus == CELL_BLOCKED) {
+                std::cout << "Cannot move there because the road is blocked" << std::endl;
+            } else if (moveStatus == OUTSIDE_BOUNDS) {
+                std::cout << "Cannot move there because it is out of bounds" << std::endl;
+            } else {
+                player->moves++;
+            }
         } else if (userInput == COMMAND_TURN_LEFT || userInput == COMMAND_TURN_LEFT_SHORTCUT) {
-            
             player->turnDirection(TURN_LEFT);
-
         } else if (userInput == COMMAND_TURN_RIGHT || userInput == COMMAND_TURN_RIGHT_SHORTCUT) {
-            cout << "turn right" << endl;
-
             player->turnDirection(TURN_RIGHT);
+        } else if (userInput == COMMAND_QUIT || std::cin.eof()) {
+            quit = true;
         } else {
             Helper::printInvalidInput();
         }
+    } while (!quit);
 
-
-
-        board->display(player);
-        showControls();
-        std::cout << "Enter command: ";
-        userInput = Helper::readInput();
-    }
-    
+    std::cout << "Total Player Moves: " << player->moves << std::endl << std::endl;
 }

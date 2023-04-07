@@ -15,13 +15,11 @@ Position::Position(int x, int y)
 
 Player::Player()
 {
-    //TODO
     this->position = Position();
 }
 
 void Player::initialisePlayer(Position* position, Direction direction)
 {
-    //TODO
     this->position = *position;
     this->direction = direction;
     this->moves = 0;
@@ -29,7 +27,6 @@ void Player::initialisePlayer(Position* position, Direction direction)
 
 void Player::turnDirection(TurnDirection turnDirection)
 {
-    //TODO
     if (turnDirection == TURN_LEFT) {
         if (this->direction == NORTH) {
             this->direction = WEST;
@@ -61,33 +58,34 @@ void Player::turnDirection(TurnDirection turnDirection)
 
 Position Player::getNextForwardPosition()
 {
-    //TODO
     //remember, arr[y][x]
-    // Position nextPos;
+    Position nextPos = Position(this->position.x, this->position.y);
 
     if (this->direction == NORTH) {
-        this->position.y++;
+        nextPos.y--;
     } else if (this->direction == EAST) {
-        this->position.x++;
+        nextPos.x++;
     } else if (this->direction == SOUTH) {
-        this->position.y--;
+        nextPos.y++;
     } else if (this->direction == WEST) {
-        this->position.x--;
+        nextPos.x--;
     } else {
         //what
+        abort();
     }
 
-    return this->position;
+    return nextPos;
 }
 
 void Player::updatePosition(Position position)
 {
-    //TODO
+    this->position.x = position.x;
+    this->position.y = position.y;
 }
+
 
 void Player::displayDirection()
 {
-    //TODO
     if (this->direction == NORTH) {
         std::cout << DIRECTION_ARROW_OUTPUT_NORTH;
     } else if (this->direction == EAST) {

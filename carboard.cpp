@@ -33,27 +33,26 @@ int main()
      * here or you can make separate functions - up to you.
      */
 
-    Helper::showMainMenu();
-    std::cout << std::endl << "Please enter your choice: ";
-    std::string userInput = Helper::readInput();
+    std::string userInput;
+    bool quit = false;
 
-    while (userInput != QUIT_GAME && !std::cin.eof()) {
-        if (userInput == PLAY_COMMAND) {
-            Game* game = new Game();
-            game->start();
-            delete game;
-        } else if (userInput == SHOW_INFO_COMMAND) {
-            showStudentInformation(STUDENT_NAME, STUDENT_ID, STUDENT_EMAIL);
-        } else {
-            Helper::printInvalidInput();
-        }
-
+    do {
         Helper::showMainMenu();
         std::cout << std::endl << "Please enter your choice: ";
         userInput = Helper::readInput();
-    }
+
+        if (userInput == PLAY_COMMAND) {
+            Game game = Game();
+            game.start();
+        } else if (userInput == SHOW_INFO_COMMAND) {
+            showStudentInformation(STUDENT_NAME, STUDENT_ID, STUDENT_EMAIL);
+        } else if (userInput == QUIT_GAME || std::cin.eof()) {
+            quit = true;
+        } else {
+            Helper::printInvalidInput();
+        }
+    } while (!quit);
 
     std::cout << "Good bye!\n\n";
     return EXIT_SUCCESS;
 }
-
