@@ -11,7 +11,7 @@ using std::endl;
 using std::string;
 
 /*
- * Show board loading options
+ * Show board loading options with option to show init command details
  * @param showPlayerInitCommand: tis a bool my friend
 */
 void showOptions(bool showPlayerInitCommand) {
@@ -104,6 +104,23 @@ bool isValidInitCommand(std::vector<std::string> command) {
     return isValid;
 }
 
+/**
+ * Takes a direction command and converts to corresponding enum
+ * Assumes correct input. Any incorrect input will return "WEST"
+*/
+Direction directionCommandToEnum(std::string command) {
+    Direction direction;
+    if (command == DIRECTION_NORTH) {
+        direction = NORTH;
+    } else if (command == DIRECTION_EAST) {
+        direction = EAST;
+    } else if (command == DIRECTION_SOUTH) {
+        direction = SOUTH;
+    } else {
+        direction = WEST;
+    }
+    return direction;
+}
 
 bool Game::loadBoard()
 {
@@ -158,24 +175,16 @@ bool Game::initializePlayer()
         } else if (isValidInitCommand(command)) {
             std::vector<std::string> args;
             Helper::splitString(command[1], args, ",");
+            int x = std::stoi(args[0]);
+            int y = std::stoi(args[1]);
 
-            bool successfulPlacement = board->placePlayer(Position(std::stoi(args[0]), std::stoi(args[1])));
+            bool successfulPlacement = board->placePlayer(Position(x, y));
 
             if (successfulPlacement) {
-                Direction direction;
-                if (args[2] == DIRECTION_NORTH) {
-                    direction = NORTH;
-                } else if (args[2] == DIRECTION_EAST) {
-                    direction = EAST;
-                } else if (args[2] == DIRECTION_SOUTH) {
-                    direction = SOUTH;
-                } else {
-                    direction = WEST;
-                }
-
-                Position* pos = new Position(std::stoi(args[0]), std::stoi(args[1]));
+                Direction direction = directionCommandToEnum(args[2]);
+                
+                Position* pos = new Position(x, y);
                 player->initialisePlayer(pos, direction);
-                // board->display(player);
 
                 // Successful init, so exit out of menu and return true
                 initSuccess = true;
