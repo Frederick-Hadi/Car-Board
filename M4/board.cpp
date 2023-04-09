@@ -80,7 +80,7 @@ PlayerMove Board::movePlayerForward(Player* player)
     Position nextPos = player->getNextForwardPosition();
     
     if (nextPos.x > DEFAULT_BOARD_DIMENSION - 1 || nextPos.y > DEFAULT_BOARD_DIMENSION - 1
-    || nextPos.x < 0 || nextPos.y < 0) {
+        || nextPos.x < 0 || nextPos.y < 0) {
         moveStatus = OUTSIDE_BOUNDS;
     } else if ((*board)[nextPos.y][nextPos.x] == BLOCKED) {
         moveStatus = CELL_BLOCKED;
