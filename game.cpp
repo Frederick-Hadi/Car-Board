@@ -68,11 +68,13 @@ void Game::start()
 
 bool isValidLoadCommand(std::vector<std::string> command) {
     bool isValid = false;
-    if (command[0] == COMMAND_LOAD && Helper::isNumber(command[1]) && command.size() == 2) {
-            int boardID = std::stoi(command[1]);
-            if (boardID >= 0 && boardID <= 2) {
-                isValid = true;
-            }
+    if (command.size() > 0) {
+        if (command[0] == COMMAND_LOAD && Helper::isNumber(command[1]) && command.size() == 2) {
+                int boardID = std::stoi(command[1]);
+                if (boardID >= 0 && boardID <= 2) {
+                    isValid = true;
+                }
+        }
     }
     return isValid;
 }
@@ -83,8 +85,14 @@ bool isValidLoadCommand(std::vector<std::string> command) {
 */
 bool isValidInitCommand(std::vector<std::string> command) {
     bool isValid = false;
+    // std::string directionList[] = {
+    //     DIRECTION_NORTH,
+    //     DIRECTION_EAST,
+    //     DIRECTION_SOUTH,
+    //     DIRECTION_WEST,
+    // };
 
-    if (command[0] == COMMAND_INIT) {
+    if (command.size() > 0 && command[0] == COMMAND_INIT) {
         std::vector<std::string> args;
         Helper::splitString(command[1], args, ",");
         if (Helper::isNumber(args[0]) && Helper::isNumber(args[1]) && args.size() == 3) {
@@ -99,28 +107,30 @@ bool isValidInitCommand(std::vector<std::string> command) {
 
 bool Game::loadBoard()
 {
+    bool quit = false;
     bool loadSuccess = false;
-    std::string userInput = "start";
-    std::vector<std::string> command = {"start"};
+    
+    std::string userInput;
+    std::vector<std::string> command;
 
-    while (command[0] != COMMAND_QUIT && loadSuccess == false && !std::cin.eof()) {
+    do {
+        showOptions(false);
+        std::cout << "Please enter command (load): ";
+        userInput = Helper::readInput();
+        Helper::splitString(userInput, command, " ");
+
         if (isValidLoadCommand(command)) {
             int boardID = std::stoi(command[1]);
             board->load(boardID);
             board->display(player);
             loadSuccess = true;
+            quit = true;
+        } else if (userInput == COMMAND_QUIT || std::cin.eof()) {
+            quit = true;
+        } else {
+            Helper::printInvalidInput();
         }
-
-        if (!loadSuccess) {
-            if (command[0] != "start") {
-                Helper::printInvalidInput();
-            }
-            showOptions(loadSuccess);
-            std::cout << "Please enter command (load): ";
-            userInput = Helper::readInput();
-            Helper::splitString(userInput, command, " ");
-        }
-    }
+    } while (!quit);
 
     return loadSuccess;
 }
@@ -165,7 +175,7 @@ bool Game::initializePlayer()
 
                 Position* pos = new Position(std::stoi(args[0]), std::stoi(args[1]));
                 player->initialisePlayer(pos, direction);
-                board->display(player);
+                // board->display(player);
 
                 // Successful init, so exit out of menu and return true
                 initSuccess = true;
