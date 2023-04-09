@@ -34,6 +34,7 @@ class Board
 
 private:
     std::vector<std::vector<Cell>>* board;
+    int dimension;
 
 public:
 
@@ -46,6 +47,11 @@ public:
      * Load the board to either BOARD_1 or BOARD_2 according to user input.
      */
     void load(int boardId);
+
+    /**
+     * Generate a board with dimensions d*d with percent p being blocked
+    */
+    void generate(int d, float p);
 
     /**
      * Try to place the PLAYER cell at the provided position.

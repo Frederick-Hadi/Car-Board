@@ -23,6 +23,12 @@ void showOptions(bool showPlayerInitCommand) {
     std::cout << "  quit" << std::endl << std::endl;
 }
 
+void showGenerate() {
+    std::cout << "At this stage of the program, only two commands are acceptable:" << std::endl;
+    std::cout << "  generate <d>,<p>" << std::endl;
+    std::cout << "  quit" << std::endl << std::endl;
+}
+
 void showControls() {
     std::cout << "At this stage of the program, only four commands are acceptable:" << std::endl;
     std::cout << "  forward" << std::endl;
@@ -54,7 +60,7 @@ void Game::start()
     bool loadSuccess = true;
 
     while (loadSuccess) {
-        loadSuccess = loadBoard();
+        loadSuccess = generateBoard();
         if (loadSuccess) {
             loadSuccess = initializePlayer();
             if (loadSuccess) {
@@ -68,7 +74,7 @@ void Game::start()
 
 bool isValidLoadCommand(std::vector<std::string> command) {
     bool isValid = false;
-    if (command.size() > 0) {
+    if (command.size() == 2) {
         if (command[0] == COMMAND_LOAD && Helper::isNumber(command[1]) && command.size() == 2) {
                 int boardID = std::stoi(command[1]);
                 if (boardID >= 0 && boardID <= 2) {
@@ -85,18 +91,13 @@ bool isValidLoadCommand(std::vector<std::string> command) {
 */
 bool isValidInitCommand(std::vector<std::string> command) {
     bool isValid = false;
-    // std::string directionList[] = {
-    //     DIRECTION_NORTH,
-    //     DIRECTION_EAST,
-    //     DIRECTION_SOUTH,
-    //     DIRECTION_WEST,
-    // };
 
-    if (command.size() > 0 && command[0] == COMMAND_INIT) {
+    if (command.size() == 2 && command[0] == COMMAND_INIT) {
         std::vector<std::string> args;
         Helper::splitString(command[1], args, ",");
         if (Helper::isNumber(args[0]) && Helper::isNumber(args[1]) && args.size() == 3) {
-            if (args[2] == DIRECTION_NORTH || args[2] == DIRECTION_EAST || args[2] == DIRECTION_SOUTH || args[2] == DIRECTION_WEST) {
+            if (args[2] == DIRECTION_NORTH || args[2] == DIRECTION_EAST 
+                || args[2] == DIRECTION_SOUTH || args[2] == DIRECTION_WEST) {
                 isValid = true;
             }
         }
@@ -104,6 +105,22 @@ bool isValidInitCommand(std::vector<std::string> command) {
     return isValid;
 }
 
+bool isValidGenerateCommand(std::vector<std::string> command) {
+    bool isValid = false;
+
+    if (command.size() == 2 && command[0] == COMMAND_GENERATE_RANDOM) {
+        std::vector<std::string> args;
+        Helper::splitString(command[1], args, ",");
+        if (Helper::isNumber(args[0]) && Helper::isNumber(args[1]) && args.size() == 2) {
+            int d = std::stoi(args[0]);
+            float p = std::stof(args[1]);
+            if (d >= 10 && d <= 20 && p >= 0 && p <= 1) {
+                isValid = true;
+            }
+        }
+    }
+    return isValid;
+}
 
 bool Game::loadBoard()
 {
@@ -133,6 +150,36 @@ bool Game::loadBoard()
     } while (!quit);
 
     return loadSuccess;
+}
+
+bool Game::generateBoard() {
+    bool quit = false;
+    bool generateSuccess = false;
+
+    std::string userInput;
+    std::vector<std::string> command;
+
+    do {
+        showGenerate();
+        std::cout << "Please enter command (generate): ";
+        userInput = Helper::readInput();
+        Helper::splitString(userInput, command, " ");
+
+        if (isValidGenerateCommand(command)) {
+            std::vector<std::string> args;
+            Helper::splitString(command[1], args, ",");
+            board->generate(std::stoi(args[0]), std::stof(args[1]));
+            board->display(player);
+            generateSuccess = true;
+            quit = true;
+        } else if (userInput == COMMAND_QUIT || std::cin.eof()) {
+            quit = true;
+        } else {
+            Helper::printInvalidInput();
+        }
+    } while (!quit);
+    
+    return generateSuccess;
 }
 
 bool Game::initializePlayer()

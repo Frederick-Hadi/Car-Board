@@ -35,6 +35,12 @@ private:
      * Return true if the board is loaded and false for quiting the game.
      */
     bool loadBoard();
+
+    /**
+     * Generate a board with size 10 to 20
+     * Generate with percentage distribution of blocked cells
+    */
+    bool generateBoard();
     
     /**
      * Initialize the player. 
