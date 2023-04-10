@@ -1,3 +1,16 @@
+/**
+ * I have followed the starter code and its comments as closely as I could for this assignment
+ * which was challenging at times for me. One annoying part was having the
+ * loadBoard() and initialisePlayer() functions need to return void and take no parameters.
+ * This is because when you are initialising a player, you can still load another board,
+ * but because all inputs must be handled within their own functions, I cannot call
+ * loadBoard() within initialisePlayer, leading to some redundant code.
+ * Am improvement for my implementaton would be to refactor the code so this repeated code was in a separate function.
+ * Overall, would have preferred being able to handle user input outside of the two functions,
+ * because the user input sounds like extra functionality that the functions don't obivously imply.
+ * 
+*/
+
 #include "game.h"
 #include "helper.h"
 
