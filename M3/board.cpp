@@ -64,7 +64,8 @@ void Board::load(int boardId)
 bool Board::placePlayer(Position position)
 {
     bool success = false;
-    if (position.x >= 0 && position.x < DEFAULT_BOARD_DIMENSION && position.y >= 0 && position.y < DEFAULT_BOARD_DIMENSION) {
+    if (position.x >= 0 && position.x < DEFAULT_BOARD_DIMENSION 
+        && position.y >= 0 && position.y < DEFAULT_BOARD_DIMENSION) {
         if ((*board)[position.y][position.x] == EMPTY) {
             (*board)[position.y][position.x] = PLAYER;
             success = true;

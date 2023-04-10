@@ -1,17 +1,11 @@
 #include "game.h"
 
-//MOVE THIS SOMEWHERE LATER??? HOW DO YOU STRUCTURE THIS CODE
-#define STUDENT_NAME "Frederick_Hadi"
-#define STUDENT_ID "s3953344"
-#define STUDENT_EMAIL "s3953344@student.rmit.edu.au"
-
-
 using std::cout;
 using std::endl;
 using std::string;
 
 /*
- * Show board loading options
+ * Show board loading options with option to show init command
  * @param showPlayerInitCommand: tis a bool my friend
 */
 void showOptions(bool showPlayerInitCommand) {
@@ -23,9 +17,16 @@ void showOptions(bool showPlayerInitCommand) {
     std::cout << "  quit" << std::endl << std::endl;
 }
 
-void showGenerate() {
+/*
+ * Show board generating options with option to show init command
+ * @param showPlayerInitCommand: tis a bool my friend
+*/
+void showGenerate(bool showPlayerInitCommand) {
     std::cout << "At this stage of the program, only two commands are acceptable:" << std::endl;
     std::cout << "  generate <d>,<p>" << std::endl;
+    if (showPlayerInitCommand) {
+        std::cout << "  init <x>,<y>,<direction>" << std::endl;
+    }
     std::cout << "  quit" << std::endl << std::endl;
 }
 
@@ -52,8 +53,6 @@ Game::~Game()
 
 void Game::start()
 {
-    //bool boardLoaded = false;
-
     board = new Board();
     board->display(player);
     
@@ -74,12 +73,10 @@ void Game::start()
 
 bool isValidLoadCommand(std::vector<std::string> command) {
     bool isValid = false;
-    if (command.size() == 2) {
-        if (command[0] == COMMAND_LOAD && Helper::isNumber(command[1]) && command.size() == 2) {
-                int boardID = std::stoi(command[1]);
-                if (boardID >= 0 && boardID <= 2) {
-                    isValid = true;
-                }
+    if (command.size() == 2 && command[0] == COMMAND_LOAD && Helper::isNumber(command[1])) {
+        int boardID = std::stoi(command[1]);
+        if (boardID > 0 && boardID <= 2) {
+            isValid = true;
         }
     }
     return isValid;
@@ -87,7 +84,7 @@ bool isValidLoadCommand(std::vector<std::string> command) {
 
 /* 
  * does not do range input validation on coordinates
- * but does check valid direction
+ * but does check for valid direction
 */
 bool isValidInitCommand(std::vector<std::string> command) {
     bool isValid = false;
@@ -114,7 +111,7 @@ bool isValidGenerateCommand(std::vector<std::string> command) {
         if (Helper::isNumber(args[0]) && Helper::isNumber(args[1]) && args.size() == 2) {
             int d = std::stoi(args[0]);
             float p = std::stof(args[1]);
-            if (d >= 10 && d <= 20 && p >= 0 && p <= 1) {
+            if (d > 0 && p >= 0) {
                 isValid = true;
             }
         }
@@ -160,7 +157,7 @@ bool Game::generateBoard() {
     std::vector<std::string> command;
 
     do {
-        showGenerate();
+        showGenerate(true);
         std::cout << "Please enter command (generate): ";
         userInput = Helper::readInput();
         Helper::splitString(userInput, command, " ");
@@ -193,14 +190,15 @@ bool Game::initializePlayer()
     std::vector<std::string> command;
 
     do {
-        showOptions(true);
+        showGenerate(true);
         std::cout << "Please enter command (init): ";
         userInput = Helper::readInput();
         Helper::splitString(userInput, command, " ");
         
-        if (isValidLoadCommand(command)) {
-            int boardID = std::stoi(command[1]);
-            board->load(boardID);
+        if (isValidGenerateCommand(command)) {
+            std::vector<std::string> args;
+            Helper::splitString(command[1], args, ",");
+            board->generate(std::stoi(args[0]), std::stof(args[1]));
             board->display(player);
         } else if (isValidInitCommand(command)) {
             std::vector<std::string> args;

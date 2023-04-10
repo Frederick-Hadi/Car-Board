@@ -1,14 +1,15 @@
 #include "game.h"
 
-//MOVE THIS SOMEWHERE LATER??? HOW DO YOU STRUCTURE THIS CODE
-#define STUDENT_NAME "Frederick_Hadi"
-#define STUDENT_ID "s3953344"
-#define STUDENT_EMAIL "s3953344@student.rmit.edu.au"
-
-
 using std::cout;
 using std::endl;
 using std::string;
+
+// Additional helpful functions within this file
+Direction directionCommandToEnum(std::string command);
+bool isValidLoadCommand(std::vector<std::string> command);
+bool isValidGenerateCommand(std::vector<std::string> command);
+void showOptions(bool showPlayerInitCommand);
+void showControls();
 
 /*
  * Show board loading options with option to show init command details
@@ -46,8 +47,6 @@ Game::~Game()
 
 void Game::start()
 {
-    //bool boardLoaded = false;
-
     board = new Board();
     board->display(player);
     
@@ -199,7 +198,6 @@ bool Game::initializePlayer()
         }
     } while (!quit);
     
-
     return initSuccess;
 }
 

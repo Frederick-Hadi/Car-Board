@@ -62,8 +62,6 @@ string Helper::readInput()
     return input;
 }
 
-
-
 void Helper::showMainMenu()
 {
     std::cout << "Welcome to Car Board" << std::endl;
@@ -91,5 +89,5 @@ void Helper::showPlayMenu()
 
 void Helper::printSeparator()
 {
-    std::cout << "--------------------" << std::endl;
+    std::cout << "------------------------------------" << std::endl;
 }

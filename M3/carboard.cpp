@@ -28,10 +28,6 @@ void showStudentInformation(std::string name, std::string id, std::string email)
 
 int main()
 {
-    /**
-     * TODO: here's the main function. You can write the "main menu" loop/code
-     * here or you can make separate functions - up to you.
-     */
 
     std::string userInput;
     bool quit = false;

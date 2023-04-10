@@ -91,5 +91,5 @@ void Helper::showPlayMenu()
 
 void Helper::printSeparator()
 {
-    std::cout << "--------------------" << std::endl;
+    std::cout << "------------------------------------" << std::endl;
 }

@@ -64,7 +64,7 @@ void Board::load(int boardId)
 }
 
 void Board::generate(int d, float p) {
-    //Initialises an empty board
+    //Initialises an empty board with specified dimension
     delete this->board;
     this->board = new std::vector<std::vector<Cell>>(
         d, std::vector<Cell>(d, EMPTY)
@@ -72,11 +72,10 @@ void Board::generate(int d, float p) {
     this->dimension = d;
     
     /** Create an array of coordinates to randomly choose from
-      * Randomly selected coordinates are swapped to be at the end
+      * Already selected coordinates are swapped to be at the end
       * and end index updated so they cannot be selected again
       */
-    int uh = d*d;
-    Position coords[uh];
+    Position coords[d*d];
     int i = 0;
     for (int x = 0; x < d; x++) {
         for (int y = 0; y < d; y++) {
@@ -89,18 +88,21 @@ void Board::generate(int d, float p) {
     int blockedCellsAmount = std::floor((d * d) * p);
     int blocksGenerated = 0;
 
-    // keep selecting random coordinates 
+    // keep selecting random coordinates from the array
     std::random_device engine;
 
     while (blocksGenerated < blockedCellsAmount) {
+        // Update max range of random coordinate index to exclude chosen points
         std::uniform_int_distribution<int> uniform_dist(0, d*d - 1 - blocksGenerated);
+
+        // Select a random coordinate from the array
         int randCoord = uniform_dist(engine);
         int _x = (coords[randCoord]).x;
         int _y = (coords[randCoord]).y;
         
         (*board)[_y][_x] = BLOCKED;
         
-        // Swap to the end to be ignored and avoid duplicates
+        // Swap coordinate to the end to be ignored and avoid duplicates
         Position temp = coords[randCoord];
         coords[randCoord] = coords[(d*d - 1) - blocksGenerated];
         coords[(d*d - 1) - blocksGenerated] = temp;
@@ -115,8 +117,8 @@ void Board::generate(int d, float p) {
 bool Board::placePlayer(Position position)
 {
     bool success = false;
-    if (position.x >= 0 && position.x < DEFAULT_BOARD_DIMENSION 
-        && position.y >= 0 && position.y < DEFAULT_BOARD_DIMENSION) {
+    if (position.x >= 0 && position.x < this->dimension 
+        && position.y >= 0 && position.y < this->dimension) {
         if ((*board)[position.y][position.x] == EMPTY) {
             (*board)[position.y][position.x] = PLAYER;
             success = true;
@@ -131,7 +133,7 @@ PlayerMove Board::movePlayerForward(Player* player)
     PlayerMove moveStatus = PLAYER_MOVED;
     Position nextPos = player->getNextForwardPosition();
     
-    if (nextPos.x > DEFAULT_BOARD_DIMENSION - 1 || nextPos.y > DEFAULT_BOARD_DIMENSION - 1
+    if (nextPos.x > this->dimension - 1 || nextPos.y > this->dimension - 1
         || nextPos.x < 0 || nextPos.y < 0) {
         moveStatus = OUTSIDE_BOUNDS;
     } else if ((*board)[nextPos.y][nextPos.x] == BLOCKED) {
