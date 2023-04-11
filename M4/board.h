@@ -49,9 +49,11 @@ public:
     void load(int boardId);
 
     /**
-     * Generate a board with dimensions d*d with percent p being blocked
+     * Generate a board with dimensions d*d with percent p cells being blocked
+     * d can take values of 1 until n
+     * p can take in values from [0, 1]
     */
-    void generate(int d, float p);
+    void generateBoard(int d, float p);
 
     /**
      * Try to place the PLAYER cell at the provided position.

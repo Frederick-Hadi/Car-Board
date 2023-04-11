@@ -119,6 +119,12 @@ bool isValidGenerateCommand(std::vector<std::string> command) {
     return isValid;
 }
 
+void Game::_loadBoardID(std::vector<std::string> command) {
+    int boardID = std::stoi(command[1]);
+    board->load(boardID);
+    board->display(player);
+}
+
 bool Game::loadBoard()
 {
     bool quit = false;
@@ -134,9 +140,7 @@ bool Game::loadBoard()
         Helper::splitString(userInput, command, " ");
 
         if (isValidLoadCommand(command)) {
-            int boardID = std::stoi(command[1]);
-            board->load(boardID);
-            board->display(player);
+            _loadBoardID(command);
             loadSuccess = true;
             quit = true;
         } else if (userInput == COMMAND_QUIT || std::cin.eof()) {
@@ -165,7 +169,7 @@ bool Game::generateBoard() {
         if (isValidGenerateCommand(command)) {
             std::vector<std::string> args;
             Helper::splitString(command[1], args, ",");
-            board->generate(std::stoi(args[0]), std::stof(args[1]));
+            board->generateBoard(std::stoi(args[0]), std::stof(args[1]));
             board->display(player);
             generateSuccess = true;
             quit = true;
@@ -198,13 +202,15 @@ bool Game::initializePlayer()
         if (isValidGenerateCommand(command)) {
             std::vector<std::string> args;
             Helper::splitString(command[1], args, ",");
-            board->generate(std::stoi(args[0]), std::stof(args[1]));
+            board->generateBoard(std::stoi(args[0]), std::stof(args[1]));
             board->display(player);
         } else if (isValidInitCommand(command)) {
             std::vector<std::string> args;
             Helper::splitString(command[1], args, ",");
 
-            bool successfulPlacement = board->placePlayer(Position(std::stoi(args[0]), std::stoi(args[1])));
+            int x = std::stoi(args[0]);
+            int y = std::stoi(args[1]);
+            bool successfulPlacement = board->placePlayer(Position(x, y));
 
             if (successfulPlacement) {
                 Direction direction;
@@ -218,7 +224,7 @@ bool Game::initializePlayer()
                     direction = WEST;
                 }
 
-                Position* pos = new Position(std::stoi(args[0]), std::stoi(args[1]));
+                Position* pos = new Position(x, y);
                 player->initialisePlayer(pos, direction);
                 // board->display(player);
 

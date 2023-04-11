@@ -63,7 +63,7 @@ void Board::load(int boardId)
     }
 }
 
-void Board::generate(int d, float p) {
+void Board::generateBoard(int d, float p) {
     //Initialises an empty board with specified dimension
     delete this->board;
     this->board = new std::vector<std::vector<Cell>>(

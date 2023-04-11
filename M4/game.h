@@ -37,6 +37,12 @@ private:
     bool loadBoard();
 
     /**
+     * Takes a valid load command and handles actually loading the board
+     * Updates the board attribute in a game object.
+    */
+    void _loadBoardID(std::vector<std::string> command);
+
+    /**
      * Generate a board with size 10 to 20
      * Generate with percentage distribution of blocked cells
     */

@@ -35,6 +35,12 @@ private:
      * Return true if the board is loaded and false for quiting the game.
      */
     bool loadBoard();
+
+    /**
+     * Takes a valid load command and handles actually loading the board
+     * Updates the board attribute in a game object.
+    */
+    void _loadBoardID(std::vector<std::string> command);
     
     /**
      * Initialize the player. 

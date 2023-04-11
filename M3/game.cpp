@@ -67,12 +67,10 @@ void Game::start()
 
 bool isValidLoadCommand(std::vector<std::string> command) {
     bool isValid = false;
-    if (command.size() > 0) {
-        if (command[0] == COMMAND_LOAD && Helper::isNumber(command[1]) && command.size() == 2) {
-                int boardID = std::stoi(command[1]);
-                if (boardID >= 0 && boardID <= 2) {
-                    isValid = true;
-                }
+    if (command.size() == 2 && command[0] == COMMAND_LOAD && Helper::isNumber(command[1])) {
+        int boardID = std::stoi(command[1]);
+        if (boardID > 0 && boardID <= 2) {
+            isValid = true;
         }
     }
     return isValid;
@@ -91,7 +89,7 @@ bool isValidInitCommand(std::vector<std::string> command) {
     //     DIRECTION_WEST,
     // };
 
-    if (command.size() > 0 && command[0] == COMMAND_INIT) {
+    if (command.size() == 2 && command[0] == COMMAND_INIT) {
         std::vector<std::string> args;
         Helper::splitString(command[1], args, ",");
         if (Helper::isNumber(args[0]) && Helper::isNumber(args[1]) && args.size() == 3) {
@@ -121,6 +119,12 @@ Direction directionCommandToEnum(std::string command) {
     return direction;
 }
 
+void Game::_loadBoardID(std::vector<std::string> command) {
+    int boardID = std::stoi(command[1]);
+    board->load(boardID);
+    board->display(player);
+}
+
 bool Game::loadBoard()
 {
     bool quit = false;
@@ -136,9 +140,7 @@ bool Game::loadBoard()
         Helper::splitString(userInput, command, " ");
 
         if (isValidLoadCommand(command)) {
-            int boardID = std::stoi(command[1]);
-            board->load(boardID);
-            board->display(player);
+            _loadBoardID(command);
             loadSuccess = true;
             quit = true;
         } else if (userInput == COMMAND_QUIT || std::cin.eof()) {
@@ -168,9 +170,7 @@ bool Game::initializePlayer()
         Helper::splitString(userInput, command, " ");
         
         if (isValidLoadCommand(command)) {
-            int boardID = std::stoi(command[1]);
-            board->load(boardID);
-            board->display(player);
+            _loadBoardID(command);
         } else if (isValidInitCommand(command)) {
             std::vector<std::string> args;
             Helper::splitString(command[1], args, ",");
@@ -219,6 +219,7 @@ void Game::play()
             } else if (moveStatus == OUTSIDE_BOUNDS) {
                 std::cout << "Cannot move there because it is out of bounds" << std::endl;
             } else {
+                // The player has moved successfully
                 player->moves++;
             }
         } else if (userInput == COMMAND_TURN_LEFT || userInput == COMMAND_TURN_LEFT_SHORTCUT) {
@@ -232,5 +233,6 @@ void Game::play()
         }
     } while (!quit);
 
+    // Print out total player moves after player has quit
     std::cout << "Total Player Moves: " << player->moves << std::endl << std::endl;
 }
